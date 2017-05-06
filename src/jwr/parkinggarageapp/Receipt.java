@@ -4,45 +4,55 @@ public class Receipt {
     private Ticket ticket;
     private FeeCalculationStrategy feeCalc;
     
-    public Receipt(String ticketId, FeeCalculationStrategy feeCalc, DataAccessStrategy dataAccessStrategy) {
+    public Receipt(final String ticketId, final FeeCalculationStrategy feeCalc, final DataAccessStrategy dataAccessStrategy) {
         setTicket(findTicket(ticketId, dataAccessStrategy));
         setFeeCalc(feeCalc);
     }
     
-    private Ticket findTicket(String ticketId, DataAccessStrategy dataAccessStrategy){
+    private final Ticket findTicket(final String ticketId, final DataAccessStrategy dataAccessStrategy){
         return dataAccessStrategy.findTicket(ticketId);
     }
 
-    public Ticket getTicket() {
+    public final Ticket getTicket() {
         return ticket;
     }
 
-    public void setTicket(Ticket ticket) {
-        this.ticket = ticket;
+    public final void setTicket(final Ticket ticket) {
+        if(ticket == null){
+            throw new IllegalArgumentException("Ticket was not found.");
+        }else{
+            this.ticket = ticket;
+        }
     }
     
     public final String getReceipt(){
         String receipt;
         
-        receipt = "Ticket ID: " + ticket.getTicketId() + "\n" +
-                 ticket.companyName + "\n" +
-                 "Hours: " + ticket.hours +
-                 "Fee Charged: " + getFee();
+        receipt = "---Customer Receipt---\n" +
+                  ticket.getCompanyName() + "\n" +
+                 "Ticket ID: " + ticket.getTicketId() + "\n" +
+                 "Hours: " + ticket.getHours() + "\n" +
+                 "Fee Charged: " + getFee() + "\n" +
+                 "----------------------\n";
         
         return receipt;
     }
     
     public final double getFee(){
         double fee;
-        fee = feeCalc.calculateFee(ticket.hours);
+        fee = feeCalc.calculateFee(ticket.getHours());
         return fee;
     }
 
-    public FeeCalculationStrategy getFeeCalc() {
+    public final FeeCalculationStrategy getFeeCalc() {
         return feeCalc;
     }
 
-    public void setFeeCalc(FeeCalculationStrategy feeCalc) {
-        this.feeCalc = feeCalc;
+    public final void setFeeCalc(final FeeCalculationStrategy feeCalc) {
+        if(feeCalc == null){
+            throw new IllegalArgumentException("Fee Calculator was not found.");
+        }else{
+            this.feeCalc = feeCalc;
+        }
     }
 }

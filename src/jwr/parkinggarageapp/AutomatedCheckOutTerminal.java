@@ -1,14 +1,19 @@
 package jwr.parkinggarageapp;
 
 public class AutomatedCheckOutTerminal {
-    OutputStrategy output;
 
-    public AutomatedCheckOutTerminal(String ticketId, FeeCalculationStrategy feeCalc, DataAccessStrategy dataAccessStrategy) {
-        endParkingTransaction(ticketId, feeCalc, dataAccessStrategy);
+    public AutomatedCheckOutTerminal(final String ticketId, final FeeCalculationStrategy feeCalc, final DataAccessStrategy dataAccessStrategy, OutputStrategy consoleOutput, OutputStrategy guiOutput) {
+        endParkingTransaction(ticketId, feeCalc, dataAccessStrategy, consoleOutput, guiOutput);
     }
     
-    public final void endParkingTransaction(String ticketId, FeeCalculationStrategy feeCalc, DataAccessStrategy dataAccessStrategy){
-        Receipt receipt = new Receipt(ticketId, feeCalc, dataAccessStrategy);
-        output.produceOutput(receipt.getReceipt());
+    public final void endParkingTransaction(final String ticketId, final FeeCalculationStrategy feeCalc, final DataAccessStrategy dataAccessStrategy, OutputStrategy consoleOutput, OutputStrategy guiOutput){
+        try{
+            Receipt receipt = new Receipt(ticketId, feeCalc, dataAccessStrategy);
+            consoleOutput.produceOutput(receipt.getReceipt());
+            guiOutput.produceOutput(receipt.getReceipt() + "\n\n" + "The Gate is now Open");
+        }
+         catch(IllegalArgumentException iae) {
+            guiOutput.produceOutput(iae.getMessage());
+        }
     }
 }

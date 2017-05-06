@@ -1,13 +1,13 @@
 package jwr.parkinggarageapp;
 
-public class MinNoMaxFeeCalculator implements FeeCalculationStrategy {
+public class EventFeeCalculator implements FeeCalculationStrategy{
     private double min;
     private double max;
     private double minFee;
     private double additionalTime;
     private double additionalFee;
 
-    public MinNoMaxFeeCalculator(double minHours, double maxHours, double minFee, double additionalTime, double additionalFee) {
+    public EventFeeCalculator(double minHours, double maxHours, double minFee, double additionalTime, double additionalFee) {
         setMin(min);
         setMax(max);
         setMinFee(minFee);
@@ -16,16 +16,15 @@ public class MinNoMaxFeeCalculator implements FeeCalculationStrategy {
     }
     
     @Override
-    public final double calculateFee(double hours) {
-        double totalHours = 0;
+    public double calculateFee(double hours) {
         double fee = 0;
         if(hours <= min){
             fee = minFee;
-        } else if(hours > min){
-            totalHours -= min;
+        } else if(hours > min || hours <= max){
+            hours -= min;
             fee += minFee;
-            while(totalHours > 0){
-                totalHours -= additionalTime;
+            while(hours > 0){
+                hours -= additionalTime;
                 fee += additionalFee;
             }
         }
